@@ -8,6 +8,7 @@ import (
 	"project-go-dasar/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func (idb *InDB) GetItem(c *gin.Context) {
@@ -37,7 +38,7 @@ func (idb *InDB) GetItem(c *gin.Context) {
 func (idb *InDB) GetItems(c *gin.Context) {
 	var items []models.Item
 
-	idb.DB.Scopes(utils.Paginate(c.Request)).Find(&items)
+	idb.DB.Scopes(utils.SearchItemKeyword(c.Request, "item_name"), utils.Paginate(c.Request)).Find(&items)
 
 	if len(items) <= 0 {
 		c.JSON(http.StatusOK, gin.H{
@@ -63,6 +64,10 @@ func (idb *InDB) CreateItem(c *gin.Context) {
 	reqBody, _ := ioutil.ReadAll(c.Request.Body)
 
 	json.Unmarshal(reqBody, &items)
+
+	for i := 0; i < len(items); i++ {
+		items[i].Id = uuid.NewString()
+	}
 
 	err := idb.DB.Create(&items).Error
 
