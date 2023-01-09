@@ -34,8 +34,7 @@ func (idb *InDB) GetCompany(c *gin.Context) {
 
 func (idb *InDB) GetCompanies(c *gin.Context) {
 	var companies []models.Company
-
-	idb.DB.Scopes(utils.Paginate(c.Request)).Find(&companies)
+	idb.DB.Scopes(utils.SearchCompanyKeyword(c.Request), utils.Paginate(c.Request)).Find(&companies)
 
 	if len(companies) <= 0 {
 		c.JSON(http.StatusOK, gin.H{

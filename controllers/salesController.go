@@ -36,7 +36,7 @@ func (idb *InDB) GetSales(c *gin.Context) {
 func (idb *InDB) GetSalesList(c *gin.Context) {
 	var salesList []models.Sales
 
-	idb.DB.Scopes(utils.Paginate(c.Request)).Find(&salesList)
+	idb.DB.Scopes(utils.SearchSalesKeyword(c.Request), utils.Paginate(c.Request)).Find(&salesList)
 
 	if len(salesList) <= 0 {
 		c.JSON(http.StatusOK, gin.H{
