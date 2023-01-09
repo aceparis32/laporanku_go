@@ -1,0 +1,4 @@
+# ignore environment
+.env
+.vscode/
+launch.json
