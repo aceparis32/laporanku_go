@@ -1,8 +1,11 @@
 package configs
 
 import (
+	"log"
+	"os"
 	"project-go-dasar/models"
 
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -27,4 +30,20 @@ func DBInit(dsn string) *gorm.DB {
 
 	db.AutoMigrate(models...)
 	return db
+}
+
+// Database connection
+func Connect() (*gorm.DB, error) {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	dsn := os.Getenv("DSN")
+
+	return gorm.Open(postgres.Open(dsn), &gorm.Config{
+		SkipDefaultTransaction: true,
+		PrepareStmt:            true,
+		DisableAutomaticPing:   false,
+	})
 }
